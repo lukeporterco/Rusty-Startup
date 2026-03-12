@@ -1,0 +1,41 @@
+# Prompt before broad branch pushes.
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "Pushing repository history should always be deliberate.",
+    match = [
+        "git push origin dev",
+    ],
+)
+
+# Forbid force pushes.
+prefix_rule(
+    pattern = ["git", "push", "--force"],
+    decision = "forbidden",
+    justification = "Never rewrite shared history in this repository. Use a normal push or a new branch.",
+    match = [
+        "git push --force origin dev",
+    ],
+)
+
+# Prompt before recursive deletes.
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "prompt",
+    justification = "Bulk deletes must be reviewed before execution.",
+    match = [
+        "rm -rf native/target",
+        "rm -rf managed/bin",
+    ],
+)
+
+# Prompt before GitHub CLI PR mutation commands.
+prefix_rule(
+    pattern = ["gh", "pr"],
+    decision = "prompt",
+    justification = "PR operations should be reviewed before execution.",
+    match = [
+        "gh pr view 1",
+        "gh pr create --title x --body y",
+    ],
+)

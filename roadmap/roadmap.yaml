@@ -1,0 +1,51 @@
+version: 1
+
+mission_statement:
+  plan: "The plan answers what must be true."
+  roadmap: "The roadmap answers in what order do we make those truths real."
+
+authority_order:
+  - "docs/authority/categories/Category 1.md"
+  - "docs/authority/categories/Category 2.md"
+  - "docs/authority/categories/Category 3.md"
+  - "docs/authority/categories/Category 4.md"
+  - "docs/authority/categories/Category 5.md"
+  - "docs/authority/categories/Category 6.md"
+  - "docs/authority/categories/Category 7.md"
+  - "QA Architecture Decisions.md"
+  - "RS Project Plan.md"
+  - "Rusty Startup Implementation Plan.md"
+  - "docs/Execution Roadmap.md"
+
+stages:
+  - id: stage-0
+    name: "repo control plane"
+    goal: "Make the repository self-describing and scope-controlled before engine code."
+    slices:
+      - "SLICE-000-control-plane"
+
+  - id: stage-1
+    name: "bootstrap spine"
+    goal: "Establish package identity, native loading shape, and managed shell boundary."
+    slices:
+      - "SLICE-001-bootstrap-shell"
+
+  - id: stage-2
+    name: "authority spine"
+    goal: "Establish world-model authority, package resolution, modset model, and deterministic discovery."
+
+  - id: stage-3
+    name: "deterministic semantic spine"
+    goal: "Establish XML pipeline, parser-lane control, def pipeline, reducers, and scheduler shape."
+
+  - id: stage-4
+    name: "mixed-zone bridge"
+    goal: "Establish managed-assisted ownership from CreateModClasses through the cutoff."
+
+  - id: stage-5
+    name: "equivalence and replay"
+    goal: "Establish snapshot manifest logic, replay behavior, and cutoff equivalence proof."
+
+  - id: stage-6
+    name: "compatibility and benchmark hardening"
+    goal: "Broaden validation, benchmark evidence, and fallback honesty."

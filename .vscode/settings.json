@@ -1,0 +1,29 @@
+{
+    "customFileOrder.rules": {
+        "c:\\Users\\lukep\\source\\repos\\Rusty Startup": {
+            "order": [
+                "codex",
+                "docs",
+                "evals",
+                "managed",
+                "native",
+                "roadmap",
+                "Categories 1-7.zip",
+                "Category 1.md",
+                "Category 2.md",
+                "Category 3.md",
+                "Category 4.md",
+                "Category 5.md",
+                "Category 6.md",
+                "Category 7.md",
+                "LICENSE",
+                "QA Architecture Decisions.md",
+                "RS Project Plan.md",
+                "Rusty Startup Implementation Plan.md",
+                "Rusty Startup.code-workspace",
+                ".vscode"
+            ],
+            "type": "manual"
+        }
+    }
+}

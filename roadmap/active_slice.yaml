@@ -1,0 +1,9 @@
+version: 1
+active_slice: "SLICE-000-control-plane"
+stage: "stage-0"
+working_directory: "."
+notes:
+  - "No engine code may be created in this slice."
+  - "Keep current authority docs in place."
+  - "Category evidence lives under docs/authority/categories/."
+  - "The goal is repo self-description and scope control."
