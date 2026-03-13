@@ -15,7 +15,6 @@ authority_order:
   - "QA Architecture Decisions.md"
   - "RS Project Plan.md"
   - "Rusty Startup Implementation Plan.md"
-  - "docs/Execution Roadmap.md"
 
 stages:
   - id: stage-0
