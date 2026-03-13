@@ -14,28 +14,30 @@ The QA decisions lock product and architecture choices.
 The implementation plan translates those authorities into a concrete architecture.
 This roadmap does not override any of them.
 
+The canonical stage and slice registry lives in `roadmap/roadmap.yaml`. Slice specifications live under `docs/slices/`.
+
 ## Current execution order
 
 ### Stage 0: repo control plane
 Create the repo-resident control system that minimizes in-chat context and constrains Codex to bounded work.
 
 ### Stage 1: bootstrap spine
-Create package identity, native loading path strategy, ABI handshake shape, and startup-entry shell boundaries.
+Create package identity, package/layout resolution, native loading path strategy, ABI handshake shape, and startup-entry shell activation.
 
 ### Stage 2: authority spine
-Create the world-model, package resolution, modset model, and deterministic discovery surfaces.
+Create the runtime context, package and mod identity model, deterministic modset model, raw XML discovery surface, and scheduler/reducer contract.
 
 ### Stage 3: deterministic semantic spine
-Create XML pipeline, parser-lane handling, def pipeline, and deterministic reducers.
+Create XML combination, patch application, parser-lane handling, inheritance resolution, and deterministic XML phase barriers.
 
 ### Stage 4: mixed-zone bridge
-Create the managed-assisted boundary from `CreateModClasses` through the cutoff.
+Create the managed-assisted boundary from `CreateModClasses` through `R9` and the Category 3 cutoff equivalence boundary.
 
-### Stage 5: equivalence and replay
-Create replay manifests, restore logic, and cutoff equivalence proof.
+### Stage 5: snapshot and replay
+Create snapshot manifests, storage contract, invalidation logic, replay restore behavior, and bridge-visible replay status surfaces.
 
 ### Stage 6: compatibility and benchmark hardening
-Expand corpus validation, fallback honesty, and benchmark evidence.
+Expand evidence-based compatibility validation, fallback honesty, benchmark evidence, and parallelism honesty.
 
 ## Non-negotiable sequencing rules
 

@@ -25,26 +25,62 @@ stages:
 
   - id: stage-1
     name: "bootstrap spine"
-    goal: "Establish package identity, native loading shape, and managed shell boundary."
+    goal: "Establish package identity, package/layout resolution, native loading shape, and managed shell activation."
     slices:
       - "SLICE-001-bootstrap-shell"
+      - "SLICE-002-package-root-load-folder-and-layout-resolution"
+      - "SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap"
 
   - id: stage-2
     name: "authority spine"
-    goal: "Establish world-model authority, package resolution, modset model, and deterministic discovery."
+    goal: "Establish runtime context, mod/package identity, deterministic modset state, raw XML discovery, and scheduler/reducer contract."
+    slices:
+      - "SLICE-004-runtime-context-and-input-fingerprint-model"
+      - "SLICE-005-mod-identity-and-package-resolution-model"
+      - "SLICE-006-deterministic-modset-and-content-root-model"
+      - "SLICE-007-raw-xml-asset-discovery-and-r1-model"
+      - "SLICE-008-task-scheduler-and-deterministic-reducer-contract"
 
   - id: stage-3
     name: "deterministic semantic spine"
-    goal: "Establish XML pipeline, parser-lane control, def pipeline, reducers, and scheduler shape."
+    goal: "Establish XML combination, patch application, parser-lane control, inheritance resolution, and deterministic XML phase barriers."
+    slices:
+      - "SLICE-009-raw-xml-combination-and-patch-application"
+      - "SLICE-010-r2-unified-xml-state"
+      - "SLICE-011-parser-lane-manager-and-legacy-degraded-lane"
+      - "SLICE-012-r3-inheritance-resolved-xml-graph"
+      - "SLICE-013-xml-phase-barriers-scheduler-binding-and-diagnostics"
 
   - id: stage-4
     name: "mixed-zone bridge"
-    goal: "Establish managed-assisted ownership from CreateModClasses through the cutoff."
+    goal: "Establish managed-assisted ownership from CreateModClasses through R9 and the Category 3 cutoff equivalence boundary."
+    slices:
+      - "SLICE-014-mixed-zone-entry-exit-and-managed-assistance-bridge"
+      - "SLICE-015-r4-parsed-def-buckets-and-insertion-order"
+      - "SLICE-016-r5-cross-reference-resolution-state"
+      - "SLICE-017-r6-resolved-def-graph-and-implied-def-phases"
+      - "SLICE-018-r7-defof-binding-state"
+      - "SLICE-019-r8-tkey-pre-cutoff-state"
+      - "SLICE-020-r9-short-hash-state"
+      - "SLICE-021-category-3-cutoff-equivalence-oracle"
 
   - id: stage-5
-    name: "equivalence and replay"
-    goal: "Establish snapshot manifest logic, replay behavior, and cutoff equivalence proof."
+    name: "snapshot and replay"
+    goal: "Establish snapshot manifest/storage contract, invalidation logic, replay behavior, and bridge-visible replay status."
+    slices:
+      - "SLICE-022-snapshot-manifest-region-serialization-and-storage-contract"
+      - "SLICE-023-invalidation-graph-and-replay-validity-engine"
+      - "SLICE-024-full-replay-hit-and-region-restoration"
+      - "SLICE-025-partial-replay-prefix-restore-and-suffix-recompute"
+      - "SLICE-026-replay-hit-miss-bridge-status-and-degraded-lane-diagnostics"
 
   - id: stage-6
     name: "compatibility and benchmark hardening"
-    goal: "Broaden validation, benchmark evidence, and fallback honesty."
+    goal: "Broaden evidence-based compatibility validation, benchmark evidence, fallback honesty, and parallelism honesty."
+    slices:
+      - "SLICE-027-evidence-based-compatibility-classifier"
+      - "SLICE-028-local-and-workshop-corpus-validation"
+      - "SLICE-029-ownership-aware-benchmark-instrumentation-and-row-schema"
+      - "SLICE-030-tier-s-and-tier-m-baseline-validation"
+      - "SLICE-031-fallback-honesty-and-degraded-lane-validation"
+      - "SLICE-032-parallelism-honesty-and-forced-serial-controls"
