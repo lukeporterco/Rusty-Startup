@@ -1,7 +1,7 @@
 version: 1
-active_slice: "SLICE-000-control-plane"
-stage: "stage-0"
-working_directory: "."
+active_slice: "SLICE-001-bootstrap-shell"
+stage: "stage-1"
+working_directory: "managed"
 notes:
   - "No engine code may be created in this slice."
   - "Keep current authority docs in place."
