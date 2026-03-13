@@ -6,4 +6,5 @@ notes:
   - "This slice establishes self-package root detection, active load-folder selection, and package-relative layout resolution."
   - "Resolver logic must derive roots from package layout and explicit load-folder evidence, not from hardcoded machine paths."
   - "Keep package identity locked to rustystartup.core."
-  - "Do not move Rust engine semantics, snapshot/replay/equivalence logic, or XML discovery/patch ownership into this slice."
+  - "Because no test or fixture surface is currently inside SLICE-002 allowed paths, the first Codex pass must be audit-first and may not claim evidence-complete slice closure."  - "Do not move Rust engine semantics, snapshot/replay/equivalence logic, or XML discovery/patch ownership into this slice."
+
