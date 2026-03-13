@@ -59,3 +59,26 @@ It is not allowed to drift from the split-boundary model.
 
 A change is not done because code compiles.
 A change is done only when the active slice exit conditions are satisfied and the definition of done is met.
+
+## Response handoff requirement
+
+At the end of every final task report, you must append the following handoff block exactly.
+
+Do not omit fields.
+Do not rename fields.
+Use `none` when a field is not applicable.
+For `Diff or patch`, provide either:
+- a unified diff, or
+- an explicit statement that no file contents changed
+
+A task report is not complete unless this block is present.
+
+Branch:
+Active slice:
+Prompt used:
+Codex result summary:
+Files changed:
+Any files created/deleted:
+Tests/checks run:
+Did Codex report any unresolved issues or assumptions:
+Diff or patch:
