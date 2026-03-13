@@ -1,47 +1,38 @@
 # Current Build Context
 
-## Current phase
+## Current phase`r`n`r`nStage 1: bootstrap spine
 
-Stage 0: repo control plane
-
-## Current active slice
-
-SLICE-000-control-plane
+## Current active slice`r`n`r`nSLICE-001-bootstrap-shell
 
 ## Current authority layout
 
 - Category evidence lives under `docs/authority/categories/`
 - QA and project/implementation authority docs remain in the repo root
 
-## What is being made true now
-
-The repository becomes self-describing enough that Codex can work from repo context instead of chat context.
+## What is being made true now`r`n`r`nThe thin managed bootstrap shell boundary is being established so package identity, path resolution shape, native loading shape, ABI handshake shape, startup entry shape, and diagnostics surfacing shape become real without introducing semantic ownership.
 
 ## In scope now
 
-- repo instructions
-- authority layout
-- roadmap
-- slice structure
-- ADR policy
-- module map
-- boundary map
-- managed/native directory instructions
-- PR template
-- Codex rules
-- process docs
+- managed shell boundary
+- package identity shape
+- path resolution shape
+- native loading shape
+- ABI handshake shape
+- startup entry shape
+- diagnostics surfacing shape
+- scope tracking updates
 
 ## Explicitly out of scope now
 
-- Rust engine code
-- C# shell code
-- workflow automation code
-- snapshot serialization code
-- equivalence implementation
+- Rust engine semantics
+- snapshot serialization
+- replay logic
+- equivalence logic
+- mixed-zone semantic implementation
 - benchmark harness implementation
 
 ## Current architectural warnings
 
 - Do not let the shell become a semantic owner.
-- Do not create code before the control plane exists.
-- Do not create giant architecture documents that compete with the implementation plan.
+- Do not move world-model authority into managed code.
+- Keep this commit to scope-switch bookkeeping only.
