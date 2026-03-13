@@ -1,5 +1,5 @@
-version: 1
-active_slice: "SLICE-001-bootstrap-shell"
+﻿version: 1
+active_slice: "SLICE-002-package-root-load-folder-and-layout-resolution"
 stage: "stage-1"
 working_directory: "managed"
 notes:
