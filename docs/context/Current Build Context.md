@@ -25,7 +25,6 @@ Self-package root detection, active load-folder selection, and package-relative 
 - explicit resolution diagnostics
 - scope tracking updates
 - audit-first resolver-contract hardening because no test or fixture surface is currently inside SLICE-002 allowed paths
-- audit-first resolver-contract hardening because no test or fixture surface is currently inside SLICE-002 allowed paths
 
 ## Explicitly out of scope now
 
@@ -42,5 +41,3 @@ Self-package root detection, active load-folder selection, and package-relative 
 - Do not hardcode machine-specific paths into resolver logic.
 - Keep package identity locked to `rustystartup.core`.
 - Keep this slice scoped to root/load-folder/layout resolution only.
-
-

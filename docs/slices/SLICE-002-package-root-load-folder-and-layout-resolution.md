@@ -2,7 +2,7 @@
 
 ## Objective
 
-Make Rusty Startupâ€™s bootstrap-local self-package root detection, active load-folder selection, and package-relative managed/native path resolution real and explainable for the current RimWorld 1.6 contract, without turning the managed shell into the canonical owner of generalized modset or `R0` content-root semantics.
+Make Rusty Startup's bootstrap-local self-package root detection, active load-folder selection, and package-relative managed/native path resolution real and explainable for the current RimWorld 1.6 contract, without turning the managed shell into the canonical owner of generalized modset or `R0` content-root semantics.
 
 ## Milestone
 
@@ -30,7 +30,7 @@ Stage 1
 ## Invariants
 
 - Package identity remains locked to `rustystartup.core`; `lukep.rustystartup` is historical evidence only.
-- This slice covers bootstrap-local self-resolution for Rusty Startupâ€™s own shipping package only.
+- This slice covers bootstrap-local self-resolution for Rusty Startup's own shipping package only.
 - Resolver logic must derive the package root and selected active content root from discoverable package layout, current runtime version input, and explicit load-folder evidence, not from hardcoded machine paths or blind folder assumptions.
 - Managed shell code may compute the self-package assembly and native paths required to activate the core, but canonical generalized `package_resolver` ownership and global `R0` content-root semantics remain native-side work.
 - One canonical package root is allowed for the shipping identity; duplicate or nested Rusty Startup package identities must be surfaced as a diagnostic failure, not silently tolerated.
@@ -58,7 +58,7 @@ The current 1.6 bootstrap-local resolver for this slice supports only the follow
 - root-only layout, where the package root itself is the selected active content root
 - version-folder layout, where the selected runtime version folder under the canonical package root becomes the active content root
 - LoadFolders.xml-routed layout, where the selected active content root is chosen from explicit load-folder evidence for the current runtime version
-- duplicate or nested ustystartup.core identities, which must fail with explicit diagnostics rather than choosing one implicitly
+- duplicate or nested `rustystartup.core` identities, which must fail with explicit diagnostics rather than choosing one implicitly
 - unsupported or ambiguous layout cases, including conditional load-folder rules the bootstrap-local resolver cannot prove, which must fail honestly with explicit diagnostics
 
 No other self-layout cases are treated as supported by this slice.
@@ -106,12 +106,6 @@ The current repo snapshot does not expose any test or fixture surface inside thi
 
 Required evidence remains mandatory for formal completion. Any report for this slice must distinguish between code-shape progress and evidence-complete closure.
 
-## Evidence execution rule
-
-The current repo snapshot does not expose any test or fixture surface inside this slice's allowed paths. Until a later control-plane change creates one, the first Codex pass for SLICE-002 must be audit-first and may shape resolver code, diagnostics, and contracts, but it must not claim evidence-complete slice closure.
-
-Required evidence remains mandatory for formal completion. Any report for this slice must distinguish between code-shape progress and evidence-complete closure.
-
 ## Exit criteria
 
 - the shell can resolve the canonical Rusty Startup package root on the current machine without hardcoded absolute paths
@@ -127,7 +121,3 @@ Required evidence remains mandatory for formal completion. Any report for this s
 - no raw XML discovery or patching
 - no scheduler, reducer, or parallelism implementation
 - no replay, equivalence, or mixed-zone semantic implementation
-
-
-
-
