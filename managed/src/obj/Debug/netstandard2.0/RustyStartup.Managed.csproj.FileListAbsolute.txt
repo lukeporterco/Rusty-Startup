@@ -1,0 +1,11 @@
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.csproj.AssemblyReference.cache
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.AssemblyInfoInputs.cache
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.AssemblyInfo.cs
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.csproj.CoreCompileInputs.cache
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.sourcelink.json
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\bin\Debug\netstandard2.0\RustyStartup.Managed.deps.json
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\bin\Debug\netstandard2.0\RustyStartup.Managed.dll
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\bin\Debug\netstandard2.0\RustyStartup.Managed.pdb
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.dll
+C:\Users\lukep\source\repos\Rusty Startup\managed\src\obj\Debug\netstandard2.0\RustyStartup.Managed.pdb

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace RustyStartup.Managed.Boundary
@@ -13,34 +12,7 @@ namespace RustyStartup.Managed.Boundary
 
     public static class NativePathResolver
     {
-        public static NativePathResolution Resolve(string modRootPath)
-        {
-            if (string.IsNullOrWhiteSpace(modRootPath))
-            {
-                throw new ArgumentException("Mod root path is required.", nameof(modRootPath));
-            }
-
-            var absoluteRoot = Path.GetFullPath(modRootPath.Trim());
-            var platform = DetectPlatform();
-            var architecture = DetectArchitectureSegment();
-            var ridPrefix = GetRidPrefix(platform);
-            var rid = ridPrefix + "-" + architecture;
-            var nativeFileName = GetNativeFileName(platform);
-            var relativePath = Path.Combine("1.6", "Native", rid, nativeFileName);
-            var absolutePath = Path.GetFullPath(Path.Combine(absoluteRoot, relativePath));
-            var exists = File.Exists(absolutePath);
-
-            return new NativePathResolution(
-                absoluteRoot,
-                relativePath,
-                absolutePath,
-                platform,
-                rid,
-                nativeFileName,
-                exists);
-        }
-
-        private static NativePlatform DetectPlatform()
+        public static NativePlatform DetectPlatform()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -60,7 +32,7 @@ namespace RustyStartup.Managed.Boundary
             throw new PlatformNotSupportedException("Unsupported operating system for RustyStartup native loading.");
         }
 
-        private static string DetectArchitectureSegment()
+        public static string DetectArchitectureSegment()
         {
             switch (RuntimeInformation.OSArchitecture)
             {
@@ -74,7 +46,7 @@ namespace RustyStartup.Managed.Boundary
             }
         }
 
-        private static string GetRidPrefix(NativePlatform platform)
+        public static string GetRidPrefix(NativePlatform platform)
         {
             switch (platform)
             {
@@ -89,7 +61,7 @@ namespace RustyStartup.Managed.Boundary
             }
         }
 
-        private static string GetNativeFileName(NativePlatform platform)
+        public static string GetNativeFileName(NativePlatform platform)
         {
             switch (platform)
             {
@@ -103,40 +75,5 @@ namespace RustyStartup.Managed.Boundary
                     throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
             }
         }
-    }
-
-    public sealed class NativePathResolution
-    {
-        public NativePathResolution(
-            string absoluteModRoot,
-            string relativeNativePath,
-            string absoluteNativePath,
-            NativePlatform platform,
-            string runtimeIdentifier,
-            string nativeFileName,
-            bool exists)
-        {
-            AbsoluteModRoot = absoluteModRoot;
-            RelativeNativePath = relativeNativePath;
-            AbsoluteNativePath = absoluteNativePath;
-            Platform = platform;
-            RuntimeIdentifier = runtimeIdentifier;
-            NativeFileName = nativeFileName;
-            Exists = exists;
-        }
-
-        public string AbsoluteModRoot { get; }
-
-        public string RelativeNativePath { get; }
-
-        public string AbsoluteNativePath { get; }
-
-        public NativePlatform Platform { get; }
-
-        public string RuntimeIdentifier { get; }
-
-        public string NativeFileName { get; }
-
-        public bool Exists { get; }
     }
 }

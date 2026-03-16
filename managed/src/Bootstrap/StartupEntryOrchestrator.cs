@@ -35,44 +35,110 @@ namespace RustyStartup.Managed.Bootstrap
                     "Package identity does not match the locked v1 identity.");
             }
 
-            NativePathResolution resolution;
+            var effectiveSelfAssemblyPath = string.IsNullOrWhiteSpace(input.ManagedSelfAssemblyPath)
+                ? typeof(RustyStartupMod).Assembly.Location
+                : input.ManagedSelfAssemblyPath!;
+
+            SelfPackageLayoutResolution resolution;
             try
             {
-                resolution = NativePathResolver.Resolve(input.ModRootPath);
+                resolution = SelfPackageLayoutResolver.Resolve(
+                    new SelfPackageLayoutResolverInput(
+                        input.ModRootPath,
+                        identity.ObservedPackageId,
+                        identity.ObservedSource,
+                        input.RuntimeVersionBasis,
+                        input.RuntimeVersionSource,
+                        effectiveSelfAssemblyPath));
             }
             catch (Exception ex)
             {
                 return Fallback(
                     diagnostics,
-                    "native_path_resolution_failed",
-                    "Native path resolution failed: " + ex.Message);
+                    "self_package_layout_resolution_failed",
+                    "Self-package layout resolution failed: " + ex.Message);
             }
 
             diagnostics.Emit(
-                surface: "native_load_path",
-                status: resolution.Exists ? "resolved" : "missing",
-                message: "Deterministic package-relative native path was resolved.",
+                surface: "runtime_version_basis",
+                status: "observed",
+                message: "Observed runtime build or version basis for selected active content root resolution.",
                 data: new Dictionary<string, string>
                 {
-                    { "modRoot", resolution.AbsoluteModRoot },
-                    { "relativePath", resolution.RelativeNativePath },
-                    { "absolutePath", resolution.AbsoluteNativePath },
-                    { "rid", resolution.RuntimeIdentifier },
-                    { "platform", resolution.Platform.ToString() },
-                    { "exists", resolution.Exists ? "true" : "false" },
+                    { "runtimeVersionBasis", resolution.RuntimeVersionBasis },
+                    { "runtimeVersionSource", resolution.RuntimeVersionSource },
                 });
 
-            if (!resolution.Exists)
+            diagnostics.Emit(
+                surface: "package_root_resolution",
+                status: resolution.IsResolved ? "resolved" : "failed",
+                message: "Self-package package root resolution result.",
+                data: new Dictionary<string, string>
+                {
+                    { "observedPackageId", resolution.ObservedPackageId },
+                    { "observedPackageIdSource", resolution.ObservedPackageIdSource },
+                    { "packageRoot", resolution.PackageRoot ?? "none" },
+                    { "packageRootDetectionSource", resolution.PackageRootDetectionSource ?? "none" },
+                });
+
+            diagnostics.Emit(
+                surface: "active_content_root_selection",
+                status: resolution.IsResolved ? "selected" : "failed",
+                message: "Selected active content root and layout decision basis.",
+                data: new Dictionary<string, string>
+                {
+                    { "selectedActiveContentRoot", resolution.SelectedActiveContentRoot ?? "none" },
+                    { "layoutDecisionBasis", resolution.LayoutDecisionBasis ?? "none" },
+                    { "loadFolderGateStatus", resolution.LoadFolderGateStatus },
+                    { "loadFoldersEvidencePath", resolution.LoadFoldersEvidencePath ?? "none" },
+                    { "loadFoldersEvidenceStatus", resolution.LoadFoldersEvidenceStatus },
+                });
+
+            diagnostics.Emit(
+                surface: "managed_assembly_path",
+                status: resolution.ManagedAssemblyExists ? "resolved" : "missing",
+                message: "Managed assembly path resolved from selected active content root.",
+                data: new Dictionary<string, string>
+                {
+                    { "absoluteManagedAssemblyPath", resolution.AbsoluteManagedAssemblyPath ?? "none" },
+                    { "packageRelativeManagedAssemblyPath", resolution.PackageRelativeManagedAssemblyPath ?? "none" },
+                    { "exists", resolution.ManagedAssemblyExists ? "true" : "false" },
+                });
+
+            diagnostics.Emit(
+                surface: "native_payload_path",
+                status: resolution.NativePayloadExists ? "resolved" : "missing",
+                message: "Native payload path resolved from selected active content root.",
+                data: new Dictionary<string, string>
+                {
+                    { "absoluteNativePayloadPath", resolution.AbsoluteNativePayloadPath ?? "none" },
+                    { "packageRelativeNativePayloadPath", resolution.PackageRelativeNativePayloadPath ?? "none" },
+                    { "platform", resolution.Platform?.ToString() ?? "none" },
+                    { "runtimeIdentifier", resolution.RuntimeIdentifier ?? "none" },
+                    { "nativeFileName", resolution.NativeFileName ?? "none" },
+                    { "exists", resolution.NativePayloadExists ? "true" : "false" },
+                });
+
+            if (!resolution.IsResolved)
             {
                 return Fallback(
                     diagnostics,
-                    "native_binary_missing",
-                    "Native binary is missing at resolved path.");
+                    resolution.FailureReasonCode,
+                    resolution.FailureReason);
             }
 
+            if (!resolution.NativePayloadExists || string.IsNullOrWhiteSpace(resolution.AbsoluteNativePayloadPath) || resolution.Platform == null)
+            {
+                return Fallback(
+                    diagnostics,
+                    "native_payload_missing",
+                    "Native payload is missing at the selected active content root path.");
+            }
+
+            var resolvedNativePayloadPath = resolution.AbsoluteNativePayloadPath!;
             if (!NativeLoader.TryLoad(
-                    resolution.AbsoluteNativePath,
-                    resolution.Platform,
+                    resolvedNativePayloadPath,
+                    resolution.Platform.Value,
                     out var nativeLibraryHandle,
                     out var loadError))
             {
@@ -140,10 +206,24 @@ namespace RustyStartup.Managed.Bootstrap
     public sealed class StartupEntryInput
     {
         public StartupEntryInput(string modRootPath, string? observedPackageId, string? observedPackageIdSource)
+            : this(modRootPath, observedPackageId, observedPackageIdSource, "1.6", "bootstrap_default", null)
+        {
+        }
+
+        public StartupEntryInput(
+            string modRootPath,
+            string? observedPackageId,
+            string? observedPackageIdSource,
+            string? runtimeVersionBasis,
+            string? runtimeVersionSource,
+            string? managedSelfAssemblyPath)
         {
             ModRootPath = modRootPath ?? throw new ArgumentNullException(nameof(modRootPath));
             ObservedPackageId = observedPackageId;
             ObservedPackageIdSource = observedPackageIdSource;
+            RuntimeVersionBasis = runtimeVersionBasis;
+            RuntimeVersionSource = runtimeVersionSource;
+            ManagedSelfAssemblyPath = managedSelfAssemblyPath;
         }
 
         public string ModRootPath { get; }
@@ -151,6 +231,12 @@ namespace RustyStartup.Managed.Bootstrap
         public string? ObservedPackageId { get; }
 
         public string? ObservedPackageIdSource { get; }
+
+        public string? RuntimeVersionBasis { get; }
+
+        public string? RuntimeVersionSource { get; }
+
+        public string? ManagedSelfAssemblyPath { get; }
     }
 
     public enum StartupEntryStatus

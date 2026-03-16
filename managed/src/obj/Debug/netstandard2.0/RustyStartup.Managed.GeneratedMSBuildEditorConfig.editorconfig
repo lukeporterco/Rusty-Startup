@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = RustyStartup.Managed
+build_property.ProjectDir = C:\Users\lukep\source\repos\Rusty Startup\managed\src\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 
