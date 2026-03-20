@@ -2,7 +2,9 @@
 
 ## Objective
 
-Make the explicit RimWorld startup-entry, native-loading, ABI-validation, and Rust-core bootstrap path real for `rustystartup.core`, using the thin managed shell as a narrow bootstrap, environment-capture, native-boundary, and diagnostics layer only.
+Make the explicit RimWorld startup-entry, native-loading, ABI-validation, Rust-core bootstrap path, and canonical RimWorld-usable local package surface real for `rustystartup.core`, using the thin managed shell as a narrow bootstrap, environment-capture, native-boundary, and diagnostics layer only.
+
+This slice must make the repository itself capable of acting as the canonical local `rustystartup.core` package root for current-machine startup testing, so that managed and native artifacts land in deterministic package-relative locations without per-iteration manual copy steps.
 
 ## Milestone
 
@@ -14,7 +16,11 @@ Stage 1
 - managed/src/Boundary/**
 - managed/src/Diagnostics/**
 - managed/src/Interop/**
+- managed/src/RustyStartup.Managed.csproj
 - native/**
+- About/**
+- LoadFolders.xml
+- 1.6/**
 - docs/context/Current Build Context.md
 - roadmap/active_slice.yaml
 
@@ -37,6 +43,9 @@ Stage 1
 - Native activation must use explicit dynamic loading and ABI-checked binding rather than blind static-name probing.
 - Any fallback or activation failure must be explicit and diagnostic, not silent.
 - This slice builds on the self-package layout resolution established by `SLICE-002-package-root-load-folder-and-layout-resolution` and must not reopen package-root or `LoadFolders.xml` semantics as a new ownership boundary.
+- The repository-local package scaffold must be the canonical local test package for `rustystartup.core`, not an ad hoc copy target.
+- Managed and native artifacts used for local startup testing must land in deterministic package-relative locations under the selected active content root.
+- This slice may make the repository mod-usable for current-machine testing, but it must not hardcode or semantically depend on a machine-specific RimWorld Mods path.
 - This slice must preserve deterministic package-relative loading and shell-side diagnostics as a cross-platform invariant, but it must not claim Linux or macOS local validation that has not been evidenced yet.
 
 ## Frozen bootstrap activation contract
@@ -75,8 +84,10 @@ This contract may consume the stable resolver outputs created by `SLICE-002`, bu
 
 - the RimWorld-managed startup path reaches the shell bootstrap entry from `Verse.Root_Entry.Start`, or from an explicitly equivalent startup boundary already proven in the managed shell
 - the shell consumes resolved package-relative inputs from `SLICE-002` rather than hardcoded absolute paths or placeholder assumptions
+- the repository contains a RimWorld-usable `rustystartup.core` package scaffold with `About/About.xml` and a selected active content root that can host managed and native artifacts for the current runtime basis
+- the build or packaging path places managed and native artifacts into deterministic package-relative locations used by the local test package, without per-iteration manual copy steps
 - the native library is loaded through the explicit bootstrap path and ABI-checked before Rust activation
-- diagnostics visibly distinguish success, fallback, and failure cases and expose version, package, path, and ABI status
+- diagnostics visibly distinguish success, fallback, and failure cases and expose version, package, path, packaging, and ABI status
 - the build context and active-slice metadata move from `SLICE-002` to `SLICE-003` cleanly
 - no semantic ownership moved into C#, and no replay, equivalence, snapshot, or XML-discovery work was introduced by this slice
 - any current-machine validation claims remain honest; Windows may be locally grounded, but Linux or macOS validation must not be claimed without evidence
@@ -89,7 +100,9 @@ Required evidence remains mandatory for formal completion. Any report for this s
 
 ## Exit criteria
 
-- RimWorld startup can reach the shell bootstrap path on the current machine
+- the repository provides a canonical local `rustystartup.core` mod package surface for the current runtime basis
+- managed and native artifacts land in package-relative runtime paths without per-iteration manual copy steps
+- RimWorld startup can reach the shell bootstrap path on the current machine using that package-relative layout
 - native loading and ABI validation are part of the observable bootstrap flow
 - bootstrap failure paths are explainable and bounded by diagnostics
 - the shell remains a narrow boundary layer that hands control to Rust rather than owning startup meaning
@@ -105,4 +118,5 @@ Required evidence remains mandatory for formal completion. Any report for this s
 - no XML discovery or patching
 - no benchmark harness implementation
 - no mixed-zone semantic implementation beyond the bootstrap handoff itself
+- no machine-specific copy-to-install-path deployment contract
 - no unsupported platform-validation claims beyond what evidence actually proves

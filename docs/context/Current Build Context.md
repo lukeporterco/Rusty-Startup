@@ -21,6 +21,7 @@ The managed shell now exposes an explicit RimWorld startup activation path for `
 - loads and validates the native core from a deterministic package-relative path
 - verifies ABI compatibility before handing control to Rust
 - emits structured, explainable activation and bootstrap diagnostics for success, fallback, and failure cases
+- makes the repository itself usable as the canonical local `rustystartup.core` test package for current-machine RimWorld startup validation
 
 ## In scope now
 
@@ -31,22 +32,15 @@ The managed shell now exposes an explicit RimWorld startup activation path for `
 - startup environment and runtime capture needed for activation
 - explicit activation diagnostics and failure reporting
 - use of resolved self-package layout inputs from SLICE-002
+- canonical local package scaffold for `rustystartup.core` under package-relative paths
+- automated placement of managed and native artifacts into the package-relative local test layout without per-iteration manual copy steps
 - scope tracking updates
 - implementation-complete bootstrap-contract hardening because no test or fixture surface is currently inside SLICE-003 allowed paths
-
-## Explicitly out of scope now
-
-- Rust engine semantics
-- snapshot serialization
-- replay logic
-- equivalence logic
-- XML discovery or patch application
-- benchmark harness implementation
 
 ## Current architectural warnings
 
 - Do not let the shell become a semantic owner.
-- Do not hardcode machine-specific paths into activation logic.
+- Do not hardcode machine-specific paths into activation logic or packaging logic.
 - Keep package identity locked to `rustystartup.core`.
-- Keep this slice scoped to startup entry, native loading, ABI validation, and Rust-core bootstrap only.
+- Keep this slice scoped to startup entry, package-relative local packaging, native loading, ABI validation, and Rust-core bootstrap only.
 - This slice is implementation-complete but not evidence-complete until required proof surfaces exist in allowed paths.
