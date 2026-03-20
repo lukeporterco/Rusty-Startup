@@ -37,5 +37,5 @@ The repository now has the canonical local `rustystartup.core` package scaffold,
 - Do not hardcode machine-specific paths into activation logic or packaging logic.
 - Keep package identity locked to `rustystartup.core`.
 - Keep this slice scoped to startup entry, package-relative local packaging, native loading, ABI validation, and Rust-core bootstrap only.
-- This slice is implemented for the local bootstrap path but not evidence-complete until required proof surfaces exist in allowed paths.
-- SLICE-003 is formally complete; the control plane has not been advanced because the next slice artifact is not yet present in `docs/slices/`.
+- SLICE-003 is formally complete on the current Windows machine.
+- The active control-plane state remains on SLICE-003 because no next-slice control artifact has been introduced in `docs/slices/`.
