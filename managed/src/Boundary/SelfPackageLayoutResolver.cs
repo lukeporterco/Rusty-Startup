@@ -25,40 +25,31 @@ namespace RustyStartup.Managed.Boundary
             var observedPackageIdSource = NormalizeRequiredValue(input.ObservedPackageIdSource, "unspecified");
 
             var packageRootCandidates = new List<PackageRootCandidate>();
+            var hintFailureReasons = new List<string>();
             if (!string.IsNullOrWhiteSpace(input.CandidateSelfPackageRootPath))
             {
                 var hintResult = TryFindSelfPackageRootFromHint(input.CandidateSelfPackageRootPath!, "mod_root_hint");
-                if (!hintResult.IsSuccess)
+                if (hintResult.IsSuccess)
                 {
-                    return SelfPackageLayoutResolution.Failure(
-                        runtimeVersionBasis,
-                        runtimeVersionSource,
-                        observedPackageId,
-                        observedPackageIdSource,
-                        "package_root_hint_invalid",
-                        hintResult.FailureReason,
-                        "unsupported");
+                    packageRootCandidates.Add(new PackageRootCandidate(hintResult.PackageRootPath!, "mod_root_hint"));
                 }
-
-                packageRootCandidates.Add(new PackageRootCandidate(hintResult.PackageRootPath!, "mod_root_hint"));
+                else
+                {
+                    hintFailureReasons.Add(hintResult.FailureReason);
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(input.ManagedSelfAssemblyPath))
             {
                 var assemblyResult = TryFindSelfPackageRootFromHint(input.ManagedSelfAssemblyPath!, "managed_self_assembly_path");
-                if (!assemblyResult.IsSuccess)
+                if (assemblyResult.IsSuccess)
                 {
-                    return SelfPackageLayoutResolution.Failure(
-                        runtimeVersionBasis,
-                        runtimeVersionSource,
-                        observedPackageId,
-                        observedPackageIdSource,
-                        "self_assembly_location_unresolved",
-                        assemblyResult.FailureReason,
-                        "unsupported");
+                    packageRootCandidates.Add(new PackageRootCandidate(assemblyResult.PackageRootPath!, "managed_self_assembly_path"));
                 }
-
-                packageRootCandidates.Add(new PackageRootCandidate(assemblyResult.PackageRootPath!, "managed_self_assembly_path"));
+                else
+                {
+                    hintFailureReasons.Add(assemblyResult.FailureReason);
+                }
             }
 
             if (packageRootCandidates.Count == 0)
@@ -69,7 +60,9 @@ namespace RustyStartup.Managed.Boundary
                     observedPackageId,
                     observedPackageIdSource,
                     "package_root_not_detected",
-                    "No self-package root hint or self-assembly location hint produced a canonical rustystartup.core root.",
+                    hintFailureReasons.Count > 0
+                        ? string.Join(" ", hintFailureReasons)
+                        : "No self-package root hint or self-assembly location hint produced a canonical rustystartup.core root.",
                     "unsupported");
             }
 

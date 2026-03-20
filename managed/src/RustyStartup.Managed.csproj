@@ -1,10 +1,58 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>RustyStartup.Managed</RootNamespace>
     <AssemblyName>RustyStartup.Managed</AssemblyName>
+    <RimWorldManagedDir Condition="'$(RimWorldManagedDir)' == ''">$(RIMWORLD_MANAGED_DIR)</RimWorldManagedDir>
+    <PackageRoot>$(MSBuildProjectDirectory)\..\..</PackageRoot>
+    <ManagedPackageAssembliesDir>$(PackageRoot)\1.6\Assemblies</ManagedPackageAssembliesDir>
+    <NativePackageDir>$(PackageRoot)\1.6\Native\win-x64</NativePackageDir>
+    <NativeManifestPath>$(PackageRoot)\native\Cargo.toml</NativeManifestPath>
+    <NativeCargoTargetDir>$(PackageRoot)\native\target</NativeCargoTargetDir>
+    <NativeCargoTargetTriple>x86_64-pc-windows-msvc</NativeCargoTargetTriple>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(RimWorldManagedDir)' != ''">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="ValidateBootstrapInputs" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(RimWorldManagedDir)' == ''" Text="Set RimWorldManagedDir or RIMWORLD_MANAGED_DIR to the RimWorld managed assemblies directory." />
+    <Error Condition="!Exists('$(RimWorldManagedDir)')" Text="RimWorldManagedDir does not exist: $(RimWorldManagedDir)" />
+    <Error Condition="!Exists('$(RimWorldManagedDir)\Assembly-CSharp.dll')" Text="Missing required RimWorld assembly: $(RimWorldManagedDir)\Assembly-CSharp.dll" />
+    <Error Condition="!Exists('$(RimWorldManagedDir)\UnityEngine.CoreModule.dll')" Text="Missing required RimWorld assembly: $(RimWorldManagedDir)\UnityEngine.CoreModule.dll" />
+  </Target>
+
+  <Target Name="BuildNativeBootstrapPayload" BeforeTargets="Build" Condition="'$(OS)' == 'Windows_NT'">
+    <Message Importance="high" Text="Building Rust native bootstrap payload from $(NativeManifestPath)." />
+    <Exec
+      WorkingDirectory="$(PackageRoot)\native"
+      Command="cargo build --manifest-path &quot;$(NativeManifestPath)&quot; --release --target $(NativeCargoTargetTriple)" />
+    <PropertyGroup>
+      <NativeBuiltDll>$(NativeCargoTargetDir)\$(NativeCargoTargetTriple)\release\rustystartup_core.dll</NativeBuiltDll>
+      <NativeBuiltPdb>$(NativeCargoTargetDir)\$(NativeCargoTargetTriple)\release\rustystartup_core.pdb</NativeBuiltPdb>
+      <NativePackageDll>$(NativePackageDir)\rustystartup_core.dll</NativePackageDll>
+      <NativePackagePdb>$(NativePackageDir)\rustystartup_core.pdb</NativePackagePdb>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(NativeBuiltDll)')" Text="Native cargo build did not produce the expected Windows DLL: $(NativeBuiltDll)" />
+    <MakeDir Directories="$(NativePackageDir)" />
+    <Copy SourceFiles="$(NativeBuiltDll)" DestinationFiles="$(NativePackageDll)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(NativeBuiltPdb)" DestinationFiles="$(NativePackagePdb)" Condition="Exists('$(NativeBuiltPdb)')" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyManagedBootstrapAssembly" AfterTargets="Build">
+    <MakeDir Directories="$(ManagedPackageAssembliesDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(ManagedPackageAssembliesDir)\$(TargetFileName)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(ManagedPackageAssembliesDir)\$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" SkipUnchangedFiles="true" />
+  </Target>
 </Project>
