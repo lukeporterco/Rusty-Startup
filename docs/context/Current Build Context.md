@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Stage 1: bootstrap spine
+Stage 1: bootstrap spine, SLICE-003 formally complete
 
 ## Current active slice
 
@@ -15,12 +15,7 @@ SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap
 
 ## What is being made true now
 
-The managed shell now exposes an explicit RimWorld startup activation path for `rustystartup.core` that:
-- enters startup through the thin managed bootstrap layer without becoming a second semantic owner
-- consumes the resolved self-package layout inputs established by the previous slice
-- loads and validates the native core from a deterministic package-relative path
-- verifies ABI compatibility before handing control to Rust
-- emits structured, explainable activation and bootstrap diagnostics for success, fallback, and failure cases
+The repository now has the canonical local `rustystartup.core` package scaffold, deterministic package-relative artifact placement, and a real vanilla RimWorld static-constructor startup entry that performs explicit native load, ABI validation, and Rust bootstrap activation while the managed shell remains a thin bootstrap and boundary layer. SLICE-003 is formally complete on the current Windows machine.
 
 ## In scope now
 
@@ -31,22 +26,16 @@ The managed shell now exposes an explicit RimWorld startup activation path for `
 - startup environment and runtime capture needed for activation
 - explicit activation diagnostics and failure reporting
 - use of resolved self-package layout inputs from SLICE-002
+- canonical local package scaffold for `rustystartup.core` under package-relative paths
+- automated placement of managed and native artifacts into the package-relative local test layout without per-iteration manual copy steps
 - scope tracking updates
-- implementation-complete bootstrap-contract hardening because no test or fixture surface is currently inside SLICE-003 allowed paths
-
-## Explicitly out of scope now
-
-- Rust engine semantics
-- snapshot serialization
-- replay logic
-- equivalence logic
-- XML discovery or patch application
-- benchmark harness implementation
+- startup-entry, native activation, and diagnostics hardening while the remaining host-program proof stays evidence-incomplete
 
 ## Current architectural warnings
 
 - Do not let the shell become a semantic owner.
-- Do not hardcode machine-specific paths into activation logic.
+- Do not hardcode machine-specific paths into activation logic or packaging logic.
 - Keep package identity locked to `rustystartup.core`.
-- Keep this slice scoped to startup entry, native loading, ABI validation, and Rust-core bootstrap only.
-- This slice is implementation-complete but not evidence-complete until required proof surfaces exist in allowed paths.
+- Keep this slice scoped to startup entry, package-relative local packaging, native loading, ABI validation, and Rust-core bootstrap only.
+- This slice is implemented for the local bootstrap path but not evidence-complete until required proof surfaces exist in allowed paths.
+- SLICE-003 is formally complete; the control plane has not been advanced because the next slice artifact is not yet present in `docs/slices/`.

@@ -1,0 +1,17 @@
+[package]
+name = "rustystartup_core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "rustystartup_core"
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true
+codegen-units = 1

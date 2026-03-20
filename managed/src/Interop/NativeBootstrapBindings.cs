@@ -8,15 +8,19 @@ namespace RustyStartup.Managed.Interop
     {
         private NativeBootstrapBindings(
             GetAbiVersionDelegate getAbiVersion,
-            GetCapabilitiesDelegate getCapabilities)
+            GetCapabilitiesDelegate getCapabilities,
+            ActivateBootstrapDelegate activateBootstrap)
         {
             GetAbiVersion = getAbiVersion;
             GetCapabilities = getCapabilities;
+            ActivateBootstrap = activateBootstrap;
         }
 
         public GetAbiVersionDelegate GetAbiVersion { get; }
 
         public GetCapabilitiesDelegate GetCapabilities { get; }
+
+        public ActivateBootstrapDelegate ActivateBootstrap { get; }
 
         public static bool TryBind(
             NativeLoader.NativeLibraryHandle nativeLibraryHandle,
@@ -36,11 +40,22 @@ namespace RustyStartup.Managed.Interop
                 return false;
             }
 
+            if (!NativeLoader.TryGetSymbol(nativeLibraryHandle, "rs_bootstrap_activate", out var activationSymbol, out error))
+            {
+                return false;
+            }
+
             var abiVersion = Marshal.GetDelegateForFunctionPointer<GetAbiVersionDelegate>(abiVersionSymbol);
             var capabilities = Marshal.GetDelegateForFunctionPointer<GetCapabilitiesDelegate>(capabilitiesSymbol);
+            var activation = Marshal.GetDelegateForFunctionPointer<ActivateBootstrapDelegate>(activationSymbol);
 
-            bindings = new NativeBootstrapBindings(abiVersion, capabilities);
+            bindings = new NativeBootstrapBindings(abiVersion, capabilities, activation);
             return true;
+        }
+
+        public int Activate()
+        {
+            return ActivateBootstrap();
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -48,5 +63,8 @@ namespace RustyStartup.Managed.Interop
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate ulong GetCapabilitiesDelegate();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int ActivateBootstrapDelegate();
     }
 }
