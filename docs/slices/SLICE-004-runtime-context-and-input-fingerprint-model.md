@@ -12,7 +12,7 @@ Stage 2
 
 ## Completion State
 
-Formally complete. The implementation and proof surface for this slice are present in the repository. The repository remains in Stage 2, and no next active implementation slice has been activated yet because the SLICE-005 spec file does not yet exist.
+Formally complete. The implementation and proof surface for this slice are present in the repository. The repository remains in Stage 2, and later slices should consume this slice's stable runtime-context and runtime-input fingerprint contract without reopening its ownership boundary.
 
 ## Allowed paths
 
