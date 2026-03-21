@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using RustyStartup.Managed.Boundary;
 using RustyStartup.Managed.Diagnostics;
 using RustyStartup.Managed.Interop;
@@ -230,6 +231,30 @@ namespace RustyStartup.Managed.Bootstrap
                         abi.Reason);
                 }
 
+                var runtimeContextFacts = CaptureRuntimeContextFacts(input, resolution, effectiveSelfAssemblyPath);
+                using var runtimeContextScope = RuntimeContextBootstrapInputScope.Create(runtimeContextFacts);
+                var runtimeContextReport = bindings!.SubmitRuntimeContext(ref runtimeContextScope.Input);
+                if (string.IsNullOrWhiteSpace(runtimeContextReport))
+                {
+                    nativeLibraryHandle!.Dispose();
+                    return Failure(
+                        diagnostics,
+                        "runtime_context_report_missing",
+                        "Rust runtime-context bootstrap report was empty.");
+                }
+
+                diagnostics.Emit(
+                    surface: "runtime_context_report",
+                    status: ExtractReportField(runtimeContextReport, "fingerprint_status"),
+                    message: runtimeContextReport,
+                    data: new Dictionary<string, string>
+                    {
+                        { "fingerprint", ExtractReportField(runtimeContextReport, "fingerprint_hex") },
+                        { "reason", ExtractReportField(runtimeContextReport, "fingerprint_reason") },
+                        { "classesPresent", ExtractReportField(runtimeContextReport, "classes_present") },
+                        { "startupEntrySource", input.StartupEntrySource },
+                    });
+
                 var activationResult = bindings!.Activate();
                 diagnostics.Emit(
                     surface: "rust_core_activation_status",
@@ -320,6 +345,82 @@ namespace RustyStartup.Managed.Bootstrap
                 });
 
             return StartupEntryResult.Failure(reasonCode, reason);
+        }
+
+        private static RuntimeContextBootstrapFacts CaptureRuntimeContextFacts(
+            StartupEntryInput input,
+            SelfPackageLayoutResolution resolution,
+            string effectiveSelfAssemblyPath)
+        {
+            var commandLineArgs = Environment.GetCommandLineArgs();
+
+            return new RuntimeContextBootstrapFacts
+            {
+                RuntimeBuildIdentityFreshValue = RuntimeInformation.FrameworkDescription,
+                RuntimeBuildIdentityFreshSource = "RuntimeInformation.FrameworkDescription",
+                RuntimeBuildIdentityStaticValue = input.RuntimeVersionBasis,
+                RuntimeBuildIdentityStaticSource = input.RuntimeVersionSource,
+                RuntimeVersionBasisFreshValue = Environment.Version.ToString(),
+                RuntimeVersionBasisFreshSource = "Environment.Version",
+                RuntimeVersionBasisStaticValue = input.RuntimeVersionBasis,
+                RuntimeVersionBasisStaticSource = input.RuntimeVersionSource,
+                ParserModeValue = TryDetectParserMode(commandLineArgs),
+                ParserModeSource = "Environment.GetCommandLineArgs",
+                SelectedLanguageKeyValue = System.Globalization.CultureInfo.CurrentUICulture.Name,
+                SelectedLanguageKeySource = "CultureInfo.CurrentUICulture.Name",
+                PlatformValue = NativePathResolver.DetectPlatform().ToString(),
+                PlatformSource = "NativePathResolver.DetectPlatform",
+                OperatingSystemValue = RuntimeInformation.OSDescription,
+                OperatingSystemSource = "RuntimeInformation.OSDescription",
+                ArchitectureValue = RuntimeInformation.OSArchitecture.ToString(),
+                ArchitectureSource = "RuntimeInformation.OSArchitecture",
+                SelectedSelfPackageRootValue = resolution.PackageRoot,
+                SelectedSelfPackageRootSource = resolution.PackageRootDetectionSource ?? "SelfPackageLayoutResolver.PackageRoot",
+                ActiveSelfContentRootValue = resolution.SelectedActiveContentRoot,
+                ActiveSelfContentRootSource = resolution.LayoutDecisionBasis ?? "SelfPackageLayoutResolver.SelectedActiveContentRoot",
+                ManagedSelfAssemblyPathValue = effectiveSelfAssemblyPath,
+                ManagedSelfAssemblyPathSource = input.ManagedSelfAssemblySource,
+                NativePayloadPathValue = resolution.AbsoluteNativePayloadPath,
+                NativePayloadPathSource = "SelfPackageLayoutResolver.NativePayloadPath",
+            };
+        }
+
+        private static string TryDetectParserMode(string[] commandLineArgs)
+        {
+            if (commandLineArgs != null)
+            {
+                for (var i = 0; i < commandLineArgs.Length; i++)
+                {
+                    if (commandLineArgs[i] != null &&
+                        commandLineArgs[i].IndexOf("legacy-xml-deserializer", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return "legacy-xml-deserializer";
+                    }
+                }
+            }
+
+            return "default-new";
+        }
+
+        private static string ExtractReportField(string report, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(report))
+            {
+                return "unknown";
+            }
+
+            var lines = report.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var prefix = fieldName + "=";
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                if (line.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    return line.Substring(prefix.Length);
+                }
+            }
+
+            return "unknown";
         }
     }
 

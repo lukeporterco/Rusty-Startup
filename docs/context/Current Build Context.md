@@ -2,11 +2,11 @@
 
 ## Current phase
 
-Stage 1: bootstrap spine, SLICE-003 formally complete
+Stage 2: authority spine, SLICE-004 formally complete
 
 ## Current active slice
 
-SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap
+none; next activation waits for SLICE-005 authoring
 
 ## Current authority layout
 
@@ -15,27 +15,25 @@ SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap
 
 ## What is being made true now
 
-The repository now has the canonical local `rustystartup.core` package scaffold, deterministic package-relative artifact placement, and a real vanilla RimWorld static-constructor startup entry that performs explicit native load, ABI validation, and Rust bootstrap activation while the managed shell remains a thin bootstrap and boundary layer. SLICE-003 is formally complete on the current Windows machine.
+The accepted working project state is post-`SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`. The repository remains in Stage 2 after formal completion of `SLICE-004-runtime-context-and-input-fingerprint-model`, and no next active implementation slice has been activated yet because the `SLICE-005` spec file does not yet exist.
+
+`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. The managed shell remains a thin bootstrap and boundary layer that surfaces already-observable runtime facts into Rust, while the Rust core is the canonical owner of runtime-context truth and runtime-input fingerprint semantics.
 
 ## In scope now
 
-- RimWorld startup entry wiring in the managed shell
-- explicit Rust-core bootstrap handoff
-- deterministic native library loading from the package-relative native path
-- ABI validation and binding
-- startup environment and runtime capture needed for activation
-- explicit activation diagnostics and failure reporting
-- use of resolved self-package layout inputs from SLICE-002
-- canonical local package scaffold for `rustystartup.core` under package-relative paths
-- automated placement of managed and native artifacts into the package-relative local test layout without per-iteration manual copy steps
+- native-owned `RuntimeContext` modeling
+- explicit bootstrap-to-native runtime input contract
+- normalization of runtime version or revision basis, parser mode, language or localization, platform or architecture, and bootstrap-proven self-package inputs
+- runtime-input fingerprint classes and fingerprint result modeling
+- diagnostics for observed, normalized, fingerprinted, unknown, unavailable, and unsupported runtime-input classes
+- proof surfaces for normalization and fingerprint behavior under `native/tests/**` or `evals/**`
 - scope tracking updates
-- startup-entry, native activation, and diagnostics hardening while the remaining host-program proof stays evidence-incomplete
 
 ## Current architectural warnings
 
-- Do not let the shell become a semantic owner.
-- Do not hardcode machine-specific paths into activation logic or packaging logic.
-- Keep package identity locked to `rustystartup.core`.
-- Keep this slice scoped to startup entry, package-relative local packaging, native loading, ABI validation, and Rust-core bootstrap only.
-- SLICE-003 is formally complete on the current Windows machine.
-- The active control-plane state remains on SLICE-003 because no next-slice control artifact has been introduced in `docs/slices/`.
+- Do not let the managed shell become the owner of runtime-context truth, package identity, mod identity, content-root selection, or generalized discovery semantics.
+- Do not reopen self-package layout resolution from `SLICE-002-package-root-load-folder-and-layout-resolution` or bootstrap activation ownership from `SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`.
+- Keep machine-local runtime or environment keys distinct from portable or package-derived inputs in the fingerprint model.
+- Keep parser mode explicit and fingerprinted, but do not pull parser-lane semantics or raw XML discovery into this slice.
+- Do not introduce generalized multi-mod package resolution, deterministic modset modeling, raw XML discovery, snapshot storage, replay, equivalence, or mixed-zone execution planning here.
+- Unknown or unsupported runtime inputs must remain explicit and diagnostic rather than silently defaulted into false parity claims.

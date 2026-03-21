@@ -1,0 +1,9 @@
+# .NET build output
+managed/src/bin/
+managed/src/obj/
+
+# Rust build output
+native/target/
+
+# Optional: ignore Cargo.lock for this library-style repo
+native/Cargo.lock
