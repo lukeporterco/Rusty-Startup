@@ -10,6 +10,10 @@ This slice establishes the runtime-input side of the Stage 2 authority spine and
 
 Stage 2
 
+## Completion State
+
+Formally complete. The implementation and proof surface for this slice are present in the repository. The repository remains in Stage 2, and no next active implementation slice has been activated yet because the SLICE-005 spec file does not yet exist.
+
 ## Allowed paths
 
 - native/src/**

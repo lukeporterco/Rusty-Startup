@@ -1,9 +1,11 @@
-﻿version: 1
-active_slice: "SLICE-004-runtime-context-and-input-fingerprint-model"
+version: 1
+active_slice: null
 stage: "stage-2"
 working_directory: "native"
 notes:
-  - "This slice establishes the native-owned RuntimeContext model and runtime-input fingerprint contract as the first authority-spine foundation."
+  - "SLICE-004-runtime-context-and-input-fingerprint-model is the last completed slice."
+  - "The repository remains in Stage 2."
+  - "No next active implementation slice is activated yet because the SLICE-005 spec file does not yet exist."
   - "Managed code may surface already-observable bootstrap and runtime facts into Rust, but it may not become the owner of package identity, mod identity, generalized content-root selection, or world-model truth."
   - "This slice consumes the stable self-package layout outputs from SLICE-002 and the stable bootstrap activation boundary from SLICE-003 without reopening those ownership boundaries."
   - "Fingerprinting must distinguish machine-local runtime or environment keys from portable or package-derived inputs and must surface unknown or unavailable inputs honestly."

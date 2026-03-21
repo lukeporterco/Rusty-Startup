@@ -2,11 +2,11 @@
 
 ## Current phase
 
-Stage 2: authority spine, SLICE-004 active
+Stage 2: authority spine, SLICE-004 formally complete
 
 ## Current active slice
 
-SLICE-004-runtime-context-and-input-fingerprint-model
+none; next activation waits for SLICE-005 authoring
 
 ## Current authority layout
 
@@ -15,9 +15,9 @@ SLICE-004-runtime-context-and-input-fingerprint-model
 
 ## What is being made true now
 
-The accepted working project state is post-`SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`. The repository now moves into the first Stage 2 authority-spine slice.
+The accepted working project state is post-`SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`. The repository remains in Stage 2 after formal completion of `SLICE-004-runtime-context-and-input-fingerprint-model`, and no next active implementation slice has been activated yet because the `SLICE-005` spec file does not yet exist.
 
-This slice makes the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. The managed shell remains a thin bootstrap and boundary layer that surfaces already-observable runtime facts into Rust, while the Rust core becomes the canonical owner of runtime-context truth and runtime-input fingerprint semantics.
+`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. The managed shell remains a thin bootstrap and boundary layer that surfaces already-observable runtime facts into Rust, while the Rust core is the canonical owner of runtime-context truth and runtime-input fingerprint semantics.
 
 ## In scope now
 
