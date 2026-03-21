@@ -5,8 +5,8 @@ namespace RustyStartup.Managed.Boundary
 {
     public static class AbiHandshake
     {
-        public const int ExpectedAbiVersion = 1;
-        public const ulong RequiredCapabilitiesMask = 0x1UL;
+        public const int ExpectedAbiVersion = 2;
+        public const ulong RequiredCapabilitiesMask = 0x3UL;
 
         public static AbiHandshakeStatus Validate(NativeBootstrapBindings bindings)
         {

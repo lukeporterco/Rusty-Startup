@@ -6,7 +6,7 @@ publish = false
 
 [lib]
 name = "rustystartup_core"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [profile.dev]
 panic = "abort"
