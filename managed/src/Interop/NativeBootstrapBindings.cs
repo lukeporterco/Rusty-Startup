@@ -9,12 +9,14 @@ namespace RustyStartup.Managed.Interop
         private NativeBootstrapBindings(
             GetAbiVersionDelegate getAbiVersion,
             GetCapabilitiesDelegate getCapabilities,
+            SubmitPackageDiscoveryBasisDelegate submitPackageDiscoveryBasis,
             SubmitRuntimeContextDelegate submitRuntimeContext,
             FreeCStringDelegate freeCString,
             ActivateBootstrapDelegate activateBootstrap)
         {
             GetAbiVersion = getAbiVersion;
             GetCapabilities = getCapabilities;
+            SubmitPackageDiscoveryBasisBootstrap = submitPackageDiscoveryBasis;
             SubmitRuntimeContextBootstrap = submitRuntimeContext;
             FreeCString = freeCString;
             ActivateBootstrap = activateBootstrap;
@@ -23,6 +25,8 @@ namespace RustyStartup.Managed.Interop
         public GetAbiVersionDelegate GetAbiVersion { get; }
 
         public GetCapabilitiesDelegate GetCapabilities { get; }
+
+        public SubmitPackageDiscoveryBasisDelegate SubmitPackageDiscoveryBasisBootstrap { get; }
 
         public SubmitRuntimeContextDelegate SubmitRuntimeContextBootstrap { get; }
 
@@ -48,6 +52,11 @@ namespace RustyStartup.Managed.Interop
                 return false;
             }
 
+            if (!NativeLoader.TryGetSymbol(nativeLibraryHandle, "rs_bootstrap_submit_package_discovery_basis", out var packageDiscoverySymbol, out error))
+            {
+                return false;
+            }
+
             if (!NativeLoader.TryGetSymbol(nativeLibraryHandle, "rs_bootstrap_submit_runtime_context", out var runtimeContextSymbol, out error))
             {
                 return false;
@@ -65,12 +74,31 @@ namespace RustyStartup.Managed.Interop
 
             var abiVersion = Marshal.GetDelegateForFunctionPointer<GetAbiVersionDelegate>(abiVersionSymbol);
             var capabilities = Marshal.GetDelegateForFunctionPointer<GetCapabilitiesDelegate>(capabilitiesSymbol);
+            var submitPackageDiscoveryBasis = Marshal.GetDelegateForFunctionPointer<SubmitPackageDiscoveryBasisDelegate>(packageDiscoverySymbol);
             var submitRuntimeContext = Marshal.GetDelegateForFunctionPointer<SubmitRuntimeContextDelegate>(runtimeContextSymbol);
             var freeCString = Marshal.GetDelegateForFunctionPointer<FreeCStringDelegate>(freeCStringSymbol);
             var activation = Marshal.GetDelegateForFunctionPointer<ActivateBootstrapDelegate>(activationSymbol);
 
-            bindings = new NativeBootstrapBindings(abiVersion, capabilities, submitRuntimeContext, freeCString, activation);
+            bindings = new NativeBootstrapBindings(abiVersion, capabilities, submitPackageDiscoveryBasis, submitRuntimeContext, freeCString, activation);
             return true;
+        }
+
+        public string SubmitPackageDiscoveryBasis(ref PackageDiscoveryBootstrapInput input)
+        {
+            var reportPointer = SubmitPackageDiscoveryBasisBootstrap(ref input);
+            if (reportPointer == IntPtr.Zero)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                return ReadUtf8(reportPointer);
+            }
+            finally
+            {
+                FreeCString(reportPointer);
+            }
         }
 
         public string SubmitRuntimeContext(ref RuntimeContextBootstrapInput input)
@@ -123,6 +151,9 @@ namespace RustyStartup.Managed.Interop
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate ulong GetCapabilitiesDelegate();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr SubmitPackageDiscoveryBasisDelegate(ref PackageDiscoveryBootstrapInput input);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr SubmitRuntimeContextDelegate(ref RuntimeContextBootstrapInput input);

@@ -17,7 +17,7 @@ SLICE-005-mod-identity-and-package-resolution-model
 
 The accepted working project state is post-`SLICE-004-runtime-context-and-input-fingerprint-model`. The repository remains in Stage 2, and `SLICE-005-mod-identity-and-package-resolution-model` is now the active implementation slice.
 
-`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. `SLICE-005-mod-identity-and-package-resolution-model` now builds on that basis to make native-owned mod identity and generalized package-resolution truth real, without turning the managed shell into the owner of package identity, active mod selection, or world-model semantics.
+`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. `SLICE-005-mod-identity-and-package-resolution-model` now has the native-owned package-discovery contract, package identity model, and generalized package-resolution truth implemented on top of that basis, without turning the managed shell into the owner of package identity, active mod selection, or world-model semantics.
 
 ## In scope now
 
@@ -28,6 +28,7 @@ The accepted working project state is post-`SLICE-004-runtime-context-and-input-
 - duplicate, nested, stale, missing, or ambiguous package identity/root detection with explicit diagnostics
 - narrow bootstrap-to-native inputs needed to describe package search roots or discovery environment
 - proof surfaces for package identity and package-resolution behavior under `native/tests/**` or `evals/**`
+- SLICE-005 implementation proof and eval evidence for the package-discovery contract
 - scope tracking updates
 
 ## Current architectural warnings

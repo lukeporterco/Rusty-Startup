@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using RustyStartup.Managed.Diagnostics;
 using Verse;
@@ -19,6 +20,19 @@ namespace RustyStartup.Managed.Bootstrap
         {
             var managedAssemblyPath = typeof(RustyStartupModEntry).Assembly.Location;
             var resolvedModRootPath = ResolveModRoot(managedAssemblyPath);
+            var diagnostics = new BootstrapDiagnostics();
+            diagnostics.Emit(
+                surface: "bootstrap_identity_claim",
+                status: "observed",
+                message: "Locked package identity and runtime version basis are treated as non-authoritative self-package layout evidence only.",
+                data: new Dictionary<string, string>
+                {
+                    { "observedPackageIdentity", ObservedPackageIdentity },
+                    { "observedPackageIdentitySource", ObservedPackageIdentitySource },
+                    { "runtimeVersionBasis", RuntimeVersionBasis },
+                    { "runtimeVersionSource", RuntimeVersionSource },
+                    { "managedSelfAssemblySource", ManagedSelfAssemblySource },
+                });
             var input = new StartupEntryInput(
                 StartupEntrySource,
                 resolvedModRootPath,
@@ -29,7 +43,7 @@ namespace RustyStartup.Managed.Bootstrap
                 managedAssemblyPath,
                 ManagedSelfAssemblySource);
 
-            RustyStartupMod.Initialize(input, new BootstrapDiagnostics());
+            RustyStartupMod.Initialize(input, diagnostics);
         }
 
         private static string ResolveModRoot(string managedAssemblyPath)

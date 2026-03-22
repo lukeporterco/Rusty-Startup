@@ -10,5 +10,5 @@ notes:
   - "This slice builds on the stable runtime-context and fingerprint basis from SLICE-004 and the stable self-package layout outputs from SLICE-002 without reopening those ownership boundaries."
   - "This slice may resolve canonical package roots, About/About.xml-derived metadata, package origins, and identity collisions, but it may not yet commit deterministic active-mod ordering or per-mod selected content roots for the run."
   - "Duplicate or nested About/About.xml identities, stale historical package IDs, and ambiguous package-root cases must remain explicit and diagnostic."
-  - "Proof surfaces for package identity and package resolution behavior are in scope under native/tests and evals."
+  - "Proof surfaces for package identity and package resolution behavior are in scope under native/tests and evals; SLICE-005 proof evidence is now recorded in the repository."
   - "Do not introduce deterministic modset modeling, raw XML discovery, patch application, snapshot storage, replay, equivalence, or mixed-zone execution planning in this slice."

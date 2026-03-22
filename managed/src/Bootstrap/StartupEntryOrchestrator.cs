@@ -231,6 +231,56 @@ namespace RustyStartup.Managed.Bootstrap
                         abi.Reason);
                 }
 
+                var packageDiscoveryFacts = PackageDiscoveryEnvironmentResolver.Resolve(input);
+                diagnostics.Emit(
+                    surface: "package_discovery_basis",
+                    status: "observed",
+                    message: "Bootstrap discovery basis assembled for native package resolution.",
+                    data: new Dictionary<string, string>
+                    {
+                        { "selfPackageRoot", packageDiscoveryFacts.SelfPackageRootValue ?? "none" },
+                        { "selfPackageRootSource", packageDiscoveryFacts.SelfPackageRootSource ?? "none" },
+                        { "officialDataRoot", packageDiscoveryFacts.OfficialDataRootValue ?? "none" },
+                        { "officialDataRootSource", packageDiscoveryFacts.OfficialDataRootSource ?? "none" },
+                        { "localModsRoot", packageDiscoveryFacts.LocalModsRootValue ?? "none" },
+                        { "localModsRootSource", packageDiscoveryFacts.LocalModsRootSource ?? "none" },
+                        { "workshopContentRoot", packageDiscoveryFacts.WorkshopContentRootValue ?? "none" },
+                        { "workshopContentRootSource", packageDiscoveryFacts.WorkshopContentRootSource ?? "none" },
+                        { "historicalStalePackageId", packageDiscoveryFacts.HistoricalStalePackageIdValue ?? "none" },
+                        { "historicalStalePackageIdSource", packageDiscoveryFacts.HistoricalStalePackageIdSource ?? "none" },
+                    });
+
+                using var packageDiscoveryScope = PackageDiscoveryBootstrapInputScope.Create(packageDiscoveryFacts);
+                var packageDiscoveryReport = bindings!.SubmitPackageDiscoveryBasis(ref packageDiscoveryScope.Input);
+                if (string.IsNullOrWhiteSpace(packageDiscoveryReport))
+                {
+                    nativeLibraryHandle!.Dispose();
+                    return Failure(
+                        diagnostics,
+                        "package_discovery_report_missing",
+                        "Rust package-discovery bootstrap report was empty.");
+                }
+
+                diagnostics.Emit(
+                    surface: "package_discovery_report",
+                    status: ExtractReportField(packageDiscoveryReport, "package_resolution_result"),
+                    message: packageDiscoveryReport,
+                    data: new Dictionary<string, string>
+                    {
+                        { "reasonCode", ExtractReportField(packageDiscoveryReport, "package_resolution_reason_code") },
+                        { "reason", ExtractReportField(packageDiscoveryReport, "package_resolution_reason") },
+                        { "startupEntrySource", input.StartupEntrySource },
+                    });
+
+                if (!string.Equals(ExtractReportField(packageDiscoveryReport, "package_resolution_result"), "resolved", StringComparison.OrdinalIgnoreCase))
+                {
+                    nativeLibraryHandle!.Dispose();
+                    return Failure(
+                        diagnostics,
+                        "package_discovery_failed",
+                        ExtractReportField(packageDiscoveryReport, "package_resolution_reason"));
+                }
+
                 var runtimeContextFacts = CaptureRuntimeContextFacts(input, resolution, effectiveSelfAssemblyPath);
                 using var runtimeContextScope = RuntimeContextBootstrapInputScope.Create(runtimeContextFacts);
                 var runtimeContextReport = bindings!.SubmitRuntimeContext(ref runtimeContextScope.Input);
