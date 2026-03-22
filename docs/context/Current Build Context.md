@@ -2,11 +2,11 @@
 
 ## Current phase
 
-Stage 2: authority spine, SLICE-004 formally complete
+Stage 2: authority spine, SLICE-005 active
 
 ## Current active slice
 
-none; next activation waits for SLICE-005 authoring
+SLICE-005-mod-identity-and-package-resolution-model
 
 ## Current authority layout
 
@@ -15,25 +15,27 @@ none; next activation waits for SLICE-005 authoring
 
 ## What is being made true now
 
-The accepted working project state is post-`SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`. The repository remains in Stage 2 after formal completion of `SLICE-004-runtime-context-and-input-fingerprint-model`, and no next active implementation slice has been activated yet because the `SLICE-005` spec file does not yet exist.
+The accepted working project state is post-`SLICE-004-runtime-context-and-input-fingerprint-model`. The repository remains in Stage 2, and `SLICE-005-mod-identity-and-package-resolution-model` is now the active implementation slice.
 
-`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. The managed shell remains a thin bootstrap and boundary layer that surfaces already-observable runtime facts into Rust, while the Rust core is the canonical owner of runtime-context truth and runtime-input fingerprint semantics.
+`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. `SLICE-005-mod-identity-and-package-resolution-model` now has the native-owned package-discovery contract, package identity model, and generalized package-resolution truth implemented on top of that basis, without turning the managed shell into the owner of package identity, active mod selection, or world-model semantics.
 
 ## In scope now
 
-- native-owned `RuntimeContext` modeling
-- explicit bootstrap-to-native runtime input contract
-- normalization of runtime version or revision basis, parser mode, language or localization, platform or architecture, and bootstrap-proven self-package inputs
-- runtime-input fingerprint classes and fingerprint result modeling
-- diagnostics for observed, normalized, fingerprinted, unknown, unavailable, and unsupported runtime-input classes
-- proof surfaces for normalization and fingerprint behavior under `native/tests/**` or `evals/**`
+- native-owned `ModIdentity` or equivalent package identity modeling
+- generalized package root discovery and package-resolution inputs for self, official, local, and Workshop package origins
+- canonical package identity normalization from `About/About.xml` and related package metadata
+- package origin and provenance classification, including Workshop-style numeric roots and `PublishedFileId` evidence where present
+- duplicate, nested, stale, missing, or ambiguous package identity/root detection with explicit diagnostics
+- narrow bootstrap-to-native inputs needed to describe package search roots or discovery environment
+- proof surfaces for package identity and package-resolution behavior under `native/tests/**` or `evals/**`
+- SLICE-005 implementation proof and eval evidence for the package-discovery contract
 - scope tracking updates
 
 ## Current architectural warnings
 
-- Do not let the managed shell become the owner of runtime-context truth, package identity, mod identity, content-root selection, or generalized discovery semantics.
-- Do not reopen self-package layout resolution from `SLICE-002-package-root-load-folder-and-layout-resolution` or bootstrap activation ownership from `SLICE-003-rimworld-shell-activation-and-rust-core-bootstrap`.
-- Keep machine-local runtime or environment keys distinct from portable or package-derived inputs in the fingerprint model.
-- Keep parser mode explicit and fingerprinted, but do not pull parser-lane semantics or raw XML discovery into this slice.
-- Do not introduce generalized multi-mod package resolution, deterministic modset modeling, raw XML discovery, snapshot storage, replay, equivalence, or mixed-zone execution planning here.
-- Unknown or unsupported runtime inputs must remain explicit and diagnostic rather than silently defaulted into false parity claims.
+- Do not let the managed shell become the owner of generalized package identity, mod identity, package resolution, active mod selection, or world-model truth.
+- Do not reopen self-package layout resolution from `SLICE-002-package-root-load-folder-and-layout-resolution` or runtime-context ownership from `SLICE-004-runtime-context-and-input-fingerprint-model`.
+- Do not commit deterministic active-mod ordering or per-mod selected content roots in this slice; those belong to later Stage 2 work.
+- Do not introduce raw XML discovery, patch application, snapshot storage, replay, equivalence, or mixed-zone execution planning here.
+- Duplicate or nested `About/About.xml` trees, stale historical package IDs, and ambiguous package-root cases must remain explicit and diagnostic rather than silently collapsed.
+- Local development layouts may be useful evidence, but they must not be mistaken for the shipping or Workshop contract.
