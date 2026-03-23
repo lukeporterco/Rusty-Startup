@@ -2,11 +2,11 @@
 
 ## Current phase
 
-Stage 2: authority spine, SLICE-005 active
+Stage 2: authority spine, SLICE-005 complete
 
 ## Current active slice
 
-SLICE-005-mod-identity-and-package-resolution-model
+none
 
 ## Current authority layout
 
@@ -15,21 +15,15 @@ SLICE-005-mod-identity-and-package-resolution-model
 
 ## What is being made true now
 
-The accepted working project state is post-`SLICE-004-runtime-context-and-input-fingerprint-model`. The repository remains in Stage 2, and `SLICE-005-mod-identity-and-package-resolution-model` is now the active implementation slice.
+The accepted working project state is post-`SLICE-005-mod-identity-and-package-resolution-model`. The repository remains in Stage 2, and no active implementation slice is currently declared.
 
-`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. `SLICE-005-mod-identity-and-package-resolution-model` now has the native-owned package-discovery contract, package identity model, and generalized package-resolution truth implemented on top of that basis, without turning the managed shell into the owner of package identity, active mod selection, or world-model semantics.
+`SLICE-004-runtime-context-and-input-fingerprint-model` made the native-owned `RuntimeContext` model and runtime-input fingerprint contract real on top of the stable bootstrap boundary already established by Stage 1. `SLICE-005-mod-identity-and-package-resolution-model` completed the native-owned package-discovery contract, package identity model, and generalized package-resolution truth on top of that basis, without turning the managed shell into the owner of package identity, active mod selection, or world-model semantics.
 
 ## In scope now
 
-- native-owned `ModIdentity` or equivalent package identity modeling
-- generalized package root discovery and package-resolution inputs for self, official, local, and Workshop package origins
-- canonical package identity normalization from `About/About.xml` and related package metadata
-- package origin and provenance classification, including Workshop-style numeric roots and `PublishedFileId` evidence where present
-- duplicate, nested, stale, missing, or ambiguous package identity/root detection with explicit diagnostics
-- narrow bootstrap-to-native inputs needed to describe package search roots or discovery environment
-- proof surfaces for package identity and package-resolution behavior under `native/tests/**` or `evals/**`
-- SLICE-005 implementation proof and eval evidence for the package-discovery contract
-- scope tracking updates
+- control-plane consistency tracking
+- completed proof surfaces for package identity and package-resolution behavior under `native/tests/**` and `evals/**`
+- repository-state handoff for the next authored slice
 
 ## Current architectural warnings
 

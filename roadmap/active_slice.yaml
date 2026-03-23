@@ -1,14 +1,15 @@
 version: 1
-active_slice: "SLICE-005-mod-identity-and-package-resolution-model"
+active_slice: none
 stage: "stage-2"
 working_directory: "native"
 notes:
-  - "SLICE-004-runtime-context-and-input-fingerprint-model is the last completed slice."
-  - "SLICE-005-mod-identity-and-package-resolution-model is the active implementation slice."
+  - "SLICE-004-runtime-context-and-input-fingerprint-model is the last completed slice before SLICE-005."
+  - "SLICE-005-mod-identity-and-package-resolution-model is formally complete."
+  - "No active implementation slice is currently declared."
   - "The repository remains in Stage 2."
   - "The Rust core is the canonical owner of generalized package identity and package resolution truth; managed code may surface already-observable package discovery environment inputs only when the bootstrap boundary must hand them into Rust."
-  - "This slice builds on the stable runtime-context and fingerprint basis from SLICE-004 and the stable self-package layout outputs from SLICE-002 without reopening those ownership boundaries."
-  - "This slice may resolve canonical package roots, About/About.xml-derived metadata, package origins, and identity collisions, but it may not yet commit deterministic active-mod ordering or per-mod selected content roots for the run."
-  - "Duplicate or nested About/About.xml identities, stale historical package IDs, and ambiguous package-root cases must remain explicit and diagnostic."
-  - "Proof surfaces for package identity and package resolution behavior are in scope under native/tests and evals; SLICE-005 proof evidence is now recorded in the repository."
-  - "Do not introduce deterministic modset modeling, raw XML discovery, patch application, snapshot storage, replay, equivalence, or mixed-zone execution planning in this slice."
+  - "SLICE-005 built on the stable runtime-context and fingerprint basis from SLICE-004 and the stable self-package layout outputs from SLICE-002 without reopening those ownership boundaries."
+  - "SLICE-005 resolved canonical package roots, About/About.xml-derived metadata, package origins, and identity collisions without committing deterministic active-mod ordering or per-mod selected content roots for the run."
+  - "Duplicate or nested About/About.xml identities, stale historical package IDs, and ambiguous package-root cases remain explicit and diagnostic."
+  - "Proof surfaces for package identity and package resolution behavior are recorded under native/tests and evals."
+  - "Do not introduce deterministic modset modeling, raw XML discovery, patch application, snapshot storage, replay, equivalence, or mixed-zone execution planning outside later slices."
